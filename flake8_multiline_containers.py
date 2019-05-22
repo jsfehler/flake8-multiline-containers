@@ -23,6 +23,7 @@ def get_left_pad(line: str) -> int:
 class MultilineContainers:
     """Ensure the consistency of multiline dict and list style.
     """
+
     name = 'flake8_multiline_containers'
     version = '0.0.1'
 
@@ -30,10 +31,10 @@ class MultilineContainers:
     filename = attr.ib(default="(none)")
     lines = attr.ib(default=None)
 
-    errors = attr.ib(default=[])
+    errors = attr.ib(factory=list)
 
     # The column where the last line that opened started
-    last_starts_at = attr.ib(default=[])
+    last_starts_at = attr.ib(factory=list)
 
     def _check_opening(
         self,
@@ -122,42 +123,61 @@ class MultilineContainers:
         self._check_closing('{', '}', line_number, line, ErrorCodes.JS102)
         self._check_closing('[', ']', line_number, line, ErrorCodes.JS102)
 
+    def docstring_status(self, line: str, quote: str, last_status: int) -> int:
+        """Check if a line is part of a docstring.
+
+        Arguments:
+            line: The line to scan
+            quote: The kind of quotation mark to check
+            last_status: The state of the previous line scanned
+
+        Returns:
+            0 if outside a docstring
+            1 if inside
+            2 if exiting, next line should be outside
+
+        """
+        new_status = last_status
+        if last_status == 2:
+            new_status = 0
+
+        strip = line.strip()
+
+        # If a line starts with a triple quotation mark, it's either:
+        if strip.startswith(quote):
+            # A single line docstring
+            if strip.endswith(quote) and len(strip) > 3:
+                new_status = 2
+
+            # Entering multiline docstring
+            elif last_status != 1:
+                new_status = 1
+
+            # Exiting docstring where closing is on separate line.
+            elif last_status == 1:
+                new_status = 2
+
+        # Exiting multiline docstring where closing is on same line as text.
+        elif strip.endswith(quote) and last_status == 1:
+            new_status = 2
+
+        return new_status
+
     def run(self):
         """Entry point for the plugin."""
-        inside_docstring = False
-        exiting_docstring = False
+        single_quote_status = 0
+        double_quote_status = 0
 
         for index, line in enumerate(self.lines):
             # Ensure docstrings are ignored
-            if exiting_docstring:
-                inside_docstring = False
-                exiting_docstring = False
+            single_quote_status = self.docstring_status(
+                line, "'''", single_quote_status,
+            )
+            double_quote_status = self.docstring_status(
+                line, '"""', double_quote_status,
+            )
 
-            for quote in ['"""', "'''"]:
-                strip = line.strip()
-
-                if strip.startswith(quote):
-                    # Single line docstring
-                    if strip.endswith(quote) and len(strip) > 3:
-                        inside_docstring = False
-                        break
-
-                    # Entering multiline docstring
-                    elif not inside_docstring:
-                        inside_docstring = True
-                        break
-
-                    # Exiting docstring where closing is on separate line.
-                    elif inside_docstring:
-                        exiting_docstring = True
-                        break
-
-                # Exiting multiline docstring
-                elif strip.endswith(quote) and inside_docstring:
-                    exiting_docstring = True
-                    break
-
-            if not inside_docstring:
+            if single_quote_status == 0 and double_quote_status == 0:
                 self.check_for_js101(index, line)
                 self.check_for_js102(index, line)
 

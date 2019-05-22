@@ -20,7 +20,8 @@ setuptools.setup(
     url="https://github.com/jsfehler/flake8-multiline-containers",
     py_modules=["flake8_multiline_containers"],
     install_requires=[
-        "flake8 >= 3.0.0",
+        "flake8 >= 3.7.7",
+        "attrs>=19.1.0",
     ],
     entry_points={
         'flake8.extension': [
