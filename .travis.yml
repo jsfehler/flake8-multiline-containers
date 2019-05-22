@@ -4,7 +4,7 @@ dist: xenial
 matrix:
   include:
   - python: 3.6
-    env: TOX_ENV=py36-
+    env: TOX_ENV=py36
     addons:
       sauce_connect:
         username: jsfehler
