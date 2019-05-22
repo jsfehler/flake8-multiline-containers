@@ -20,7 +20,7 @@ def set_file_path():
     return 'tests/dummy/set_examples.py'
 
 
-def test_JS101_dict(dict_file_path):
+def test_js101_dict(dict_file_path):
     style_guide = flake8.get_style_guide(
         select=['JS101'],
     )
@@ -31,7 +31,7 @@ def test_JS101_dict(dict_file_path):
     assert 3 == r.total_errors
 
 
-def test_JS102_dict(dict_file_path):
+def test_js102_dict(dict_file_path):
     style_guide = flake8.get_style_guide(
         select=['JS102'],
     )
@@ -42,7 +42,7 @@ def test_JS102_dict(dict_file_path):
     assert 2 == r.total_errors
 
 
-def test_JS101_list(list_file_path):
+def test_js101_list(list_file_path):
     style_guide = flake8.get_style_guide(
         select=['JS101'],
     )
@@ -53,7 +53,7 @@ def test_JS101_list(list_file_path):
     assert 3 == r.total_errors
 
 
-def test_JS102_list(list_file_path):
+def test_js102_list(list_file_path):
     style_guide = flake8.get_style_guide(
         select=['JS102'],
     )
@@ -64,7 +64,7 @@ def test_JS102_list(list_file_path):
     assert 2 == r.total_errors
 
 
-def test_JS101_set(set_file_path):
+def test_js101_set(set_file_path):
     style_guide = flake8.get_style_guide(
         select=['JS101'],
     )
@@ -75,7 +75,7 @@ def test_JS101_set(set_file_path):
     assert 3 == r.total_errors
 
 
-def test_JS102_set(set_file_path):
+def test_js102_set(set_file_path):
     style_guide = flake8.get_style_guide(
         select=['JS102'],
     )
