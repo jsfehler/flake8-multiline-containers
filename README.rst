@@ -2,6 +2,9 @@
 flake8-multiline-containers
 ===========================
 
+.. image:: https://travis-ci.org/jsfehler/flake8-multiline-containers.svg?branch=master
+    :target: https://travis-ci.org/jsfehler/flake8-multiline-containers
+
 A `Flake8 <https://flake8.readthedocs.io/en/latest/index.html>`_ plugin to ensure a consistent format for multiline containers.
 
 Rules
