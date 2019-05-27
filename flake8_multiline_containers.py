@@ -46,8 +46,9 @@ class MultilineContainers:
     ):
         """Implementation for JS101.
 
-        If open_character and close_character are not on the same line,
-        then open_character should be last character in line.
+        If open_character and close_character don't appear the same number of
+        times on the line, then open_character should be last character in the
+        line.
 
         Arguments:
             open_character: Opening character for the container.
@@ -57,10 +58,10 @@ class MultilineContainers:
             error_code: The error to report if the validation fails.
 
         """
-        line_opens = True if open_character in line else False
-        line_closes = True if close_character in line else False
+        open_times = line.count(open_character)
+        close_times = line.count(close_character)
 
-        if line_opens and not line_closes:
+        if open_times >= 1 and open_times != close_times:
             self.last_starts_at.append(get_left_pad(line))
 
             # Last character on a line is a newline (\n). Get second to last.
