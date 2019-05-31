@@ -1,6 +1,11 @@
 import enum
+import re
 
 import attr
+
+
+SINGLE_QUOTE_STRING_REGEX = re.compile("('.*?')")
+DOUBLE_QUOTE_STRING_REGEX = re.compile('(".*?")')
 
 
 class ErrorCodes(enum.Enum):
@@ -58,8 +63,28 @@ class MultilineContainers:
             error_code: The error to report if the validation fails.
 
         """
+        # Scan the line for parts which are a string.
+        open_matches_in_string = 0
+        close_matches_in_string = 0
+
+        for match in SINGLE_QUOTE_STRING_REGEX.finditer(line):
+            m = match.groups()
+            for i in m:
+                open_matches_in_string += i.count(open_character)
+                close_matches_in_string += i.count(close_character)
+
+        for match in DOUBLE_QUOTE_STRING_REGEX.finditer(line):
+            m = match.groups()
+            for i in m:
+                open_matches_in_string += i.count(open_character)
+                close_matches_in_string += i.count(close_character)
+
         open_times = line.count(open_character)
         close_times = line.count(close_character)
+
+        # Any time the open or close character appear in a string, ignore them.
+        open_times -= open_matches_in_string
+        close_times -= close_matches_in_string
 
         if open_times >= 1 and open_times != close_times:
             self.last_starts_at.append(get_left_pad(line))
