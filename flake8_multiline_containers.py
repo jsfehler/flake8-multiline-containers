@@ -63,7 +63,6 @@ class MultilineContainers:
             error_code: The error to report if the validation fails.
 
         """
-
         # Scan the line for parts which are a string.
         open_matches_in_string = 0
         close_matches_in_string = 0
