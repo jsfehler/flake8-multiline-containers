@@ -30,7 +30,7 @@ class MultilineContainers:
     """
 
     name = 'flake8_multiline_containers'
-    version = '0.0.1'
+    version = '0.0.2'
 
     tree = attr.ib(default=None)
     filename = attr.ib(default="(none)")
