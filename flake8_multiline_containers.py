@@ -41,6 +41,48 @@ class MultilineContainers:
     # The column where the last line that opened started
     last_starts_at = attr.ib(factory=list)
 
+    def _number_of_matches_in_line(
+            self,
+            open_character: str,
+            close_character: str,
+            line: str) -> tuple:
+        """Scan line and check how many times each character appears.
+
+        Characters inside strings are ignored.
+
+        Arguments:
+            open_character: Opening character for the container.
+            close_character: Closing character for the container.
+            line: The line to check.
+
+        Returns:
+            tuple
+
+        """
+        open_matches_in_string = 0
+        close_matches_in_string = 0
+
+        for match in SINGLE_QUOTE_STRING_REGEX.finditer(line):
+            m = match.groups()
+            for i in m:
+                open_matches_in_string += i.count(open_character)
+                close_matches_in_string += i.count(close_character)
+
+        for match in DOUBLE_QUOTE_STRING_REGEX.finditer(line):
+            m = match.groups()
+            for i in m:
+                open_matches_in_string += i.count(open_character)
+                close_matches_in_string += i.count(close_character)
+
+        open_times = line.count(open_character)
+        close_times = line.count(close_character)
+
+        # Any time the open or close character appear in a string, ignore them.
+        open_times -= open_matches_in_string
+        close_times -= close_matches_in_string
+
+        return open_times, close_times
+
     def _check_opening(
         self,
         open_character: str,
@@ -63,28 +105,9 @@ class MultilineContainers:
             error_code: The error to report if the validation fails.
 
         """
-        # Scan the line for parts which are a string.
-        open_matches_in_string = 0
-        close_matches_in_string = 0
-
-        for match in SINGLE_QUOTE_STRING_REGEX.finditer(line):
-            m = match.groups()
-            for i in m:
-                open_matches_in_string += i.count(open_character)
-                close_matches_in_string += i.count(close_character)
-
-        for match in DOUBLE_QUOTE_STRING_REGEX.finditer(line):
-            m = match.groups()
-            for i in m:
-                open_matches_in_string += i.count(open_character)
-                close_matches_in_string += i.count(close_character)
-
-        open_times = line.count(open_character)
-        close_times = line.count(close_character)
-
-        # Any time the open or close character appear in a string, ignore them.
-        open_times -= open_matches_in_string
-        close_times -= close_matches_in_string
+        open_times, close_times = self._number_of_matches_in_line(
+            open_character, close_character, line,
+        )
 
         if open_times >= 1 and open_times != close_times:
             self.last_starts_at.append(get_left_pad(line))
@@ -116,10 +139,11 @@ class MultilineContainers:
             error_code: The error to report if the validation fails.
 
         """
-        line_opens = True if open_character in line else False
-        line_closes = True if close_character in line else False
+        open_times, close_times = self._number_of_matches_in_line(
+            open_character, close_character, line,
+        )
 
-        if line_closes and not line_opens:
+        if close_times > 0 and open_times == 0:
             for index, i in enumerate(line):
                 if i == close_character:
                     if index != self.last_starts_at[-1]:
