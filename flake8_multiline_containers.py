@@ -4,8 +4,9 @@ import re
 import attr
 
 
-SINGLE_QUOTE_STRING_REGEX = re.compile("('.*?')")
-DOUBLE_QUOTE_STRING_REGEX = re.compile('(".*?")')
+STRING_REGEX = re.compile(
+    r'"([^"\\]*(\\.[^"\\]*)*)"|\'([^\'\\]*(\\.[^\'\\]*)*)\'',
+)
 
 
 class ErrorCodes(enum.Enum):
@@ -62,17 +63,11 @@ class MultilineContainers:
         open_matches_in_string = 0
         close_matches_in_string = 0
 
-        for match in SINGLE_QUOTE_STRING_REGEX.finditer(line):
-            m = match.groups()
-            for i in m:
-                open_matches_in_string += i.count(open_character)
-                close_matches_in_string += i.count(close_character)
-
-        for match in DOUBLE_QUOTE_STRING_REGEX.finditer(line):
-            m = match.groups()
-            for i in m:
-                open_matches_in_string += i.count(open_character)
-                close_matches_in_string += i.count(close_character)
+        for match in STRING_REGEX.finditer(line):
+            for i in match.groups():
+                if i is not None:
+                    open_matches_in_string += i.count(open_character)
+                    close_matches_in_string += i.count(close_character)
 
         open_times = line.count(open_character)
         close_times = line.count(close_character)
