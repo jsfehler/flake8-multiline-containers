@@ -20,6 +20,11 @@ foo = {'a': 'hello',
 }
 
 
+# Wrong: JS102
+foo = {
+    'a': 'hello', 'b': 'world'}
+
+
 # Wrong: JS101, JS102
 foo = {'a': 'hello',
        'b': 'world'}
