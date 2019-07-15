@@ -113,6 +113,30 @@ class MultilineContainers:
                 e = _error(line_number + 1, last_index, error_code)
                 self.errors.append(e)
 
+    def _get_closing_index(self, line: str, close_character: str) -> int:
+        """Get the line index for a closing character.
+
+        The last or second to last character on the line should be the closing
+        character. Depends if there was a comma or not.
+
+        Arguments:
+            line: The line to check.
+            close_character: Closing character for the container.
+
+        Returns:
+            int
+
+        """
+        slices = [-2, -3]
+        index = 0
+
+        for s in slices:
+            if line[s] == close_character:
+                index = len(line) + s
+                break
+
+        return index
+
     def _check_closing(
         self,
         open_character: str,
@@ -139,13 +163,14 @@ class MultilineContainers:
         )
 
         if close_times > 0 and open_times == 0:
-            for index, i in enumerate(line):
-                if i == close_character:
-                    if index != self.last_starts_at[-1]:
-                        e = _error(line_number + 1, index, error_code)
-                        self.errors.append(e)
-                    # Remove the last start location
-                    self.last_starts_at.pop()
+            index = self._get_closing_index(line, close_character)
+
+            if index != self.last_starts_at[-1]:
+                e = _error(line_number + 1, index, error_code)
+                self.errors.append(e)
+
+            # Remove the last start location
+            self.last_starts_at.pop()
 
     def check_for_js101(self, line_number: int, line: str):
         """Validate JS101 for a single line.

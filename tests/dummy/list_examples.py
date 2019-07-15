@@ -20,6 +20,10 @@ foo = ['hello',
        'world',
 ]
 
+# Wrong: JS102
+foo = [
+    'hello', 'world']
+
 
 # Wrong: JS101, JS102
 foo = ['hello',

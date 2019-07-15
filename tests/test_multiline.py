@@ -39,7 +39,7 @@ def test_js102_dict(dict_file_path):
     p = os.path.abspath(dict_file_path)
     r = style_guide.check_files([p])
 
-    assert 2 == r.total_errors
+    assert 3 == r.total_errors
 
 
 def test_js101_list(list_file_path):
@@ -61,7 +61,7 @@ def test_js102_list(list_file_path):
     p = os.path.abspath(list_file_path)
     r = style_guide.check_files([p])
 
-    assert 2 == r.total_errors
+    assert 3 == r.total_errors
 
 
 def test_js101_set(set_file_path):
@@ -83,4 +83,4 @@ def test_js102_set(set_file_path):
     p = os.path.abspath(set_file_path)
     r = style_guide.check_files([p])
 
-    assert 2 == r.total_errors
+    assert 3 == r.total_errors
