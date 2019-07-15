@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.5] - 2019-07-15
+
+### Fixed
+- Handle situations where a line has multiple closing characters
+
 ## [0.0.4] - 2019-06-07
 
 ### Fixed

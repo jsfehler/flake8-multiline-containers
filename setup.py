@@ -12,7 +12,7 @@ def read(filename):
 setuptools.setup(
     name="flake8-multiline-containers",
     license="MIT",
-    version="0.0.4",
+    version="0.0.5",
     description="Ensure a consistent format for multiline containers.",
     long_description=read('README.rst'),
     author="Joshua Fehler",
@@ -36,6 +36,7 @@ setuptools.setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Quality Assurance",
     ],
