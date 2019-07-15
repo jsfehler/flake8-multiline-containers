@@ -15,8 +15,7 @@ class ErrorCodes(enum.Enum):
 
 
 def _error(line_number: int, column: int, error_code: ErrorCodes) -> tuple:
-    """Format error report such that it's usable by flake8's reporting.
-    """
+    """Format error report such that it's usable by flake8's reporting."""
     return (line_number, column, f'{error_code.name} {error_code.value}', None)
 
 
@@ -27,8 +26,7 @@ def get_left_pad(line: str) -> int:
 
 @attr.s(hash=False)
 class MultilineContainers:
-    """Ensure the consistency of multiline dict and list style.
-    """
+    """Ensure the consistency of multiline dict and list style."""
 
     name = 'flake8_multiline_containers'
     version = '0.0.3'
