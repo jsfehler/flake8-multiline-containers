@@ -5,14 +5,10 @@ matrix:
   include:
   - python: 3.6
     env: TOX_ENV=py36
-    addons:
-      sauce_connect:
-        username: jsfehler
   - python: 3.7
     env: TOX_ENV=py37
-    addons:
-      sauce_connect:
-        username: jsfehler
+  - python: 3.8-dev
+    env: TOX_ENV=py38
   - python: 3.6
     env: TOX_ENV=flake8
 install:
