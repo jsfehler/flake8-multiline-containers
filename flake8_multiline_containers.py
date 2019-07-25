@@ -114,8 +114,8 @@ class MultilineContainers:
     def _get_closing_index(self, line: str, close_character: str) -> int:
         """Get the line index for a closing character.
 
-        The last or second to last character on the line should be the closing
-        character. Depends if there was a comma or not.
+        The last, second to last, or third to last character on the line should
+        be the closing character. Depends if there was a comma and/or newline.
 
         Arguments:
             line: The line to check.
@@ -125,7 +125,7 @@ class MultilineContainers:
             int
 
         """
-        slices = [-2, -3]
+        slices = [-1, -2, -3]
         index = 0
 
         for s in slices:
