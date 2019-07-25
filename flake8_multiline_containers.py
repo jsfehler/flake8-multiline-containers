@@ -114,12 +114,11 @@ class MultilineContainers:
 
             # One opening character, but content after it.
             else:
-                # Last character on a line is a newline (\n). Get second to last.
+                # Last character on a line is newline (\n). Get second to last.
                 last_index = len(line) - 2
                 if line[last_index] != open_character:
                     e = _error(line_number + 1, last_index, error_code)
                     self.errors.append(e)
-
 
     def _get_closing_index(self, line: str, close_character: str) -> int:
         """Get the line index for a closing character.
