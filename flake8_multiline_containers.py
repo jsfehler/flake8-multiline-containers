@@ -102,14 +102,23 @@ class MultilineContainers:
             open_character, close_character, line,
         )
 
+        # Multiline container detected
         if open_times >= 1 and open_times != close_times:
-            self.last_starts_at.append(get_left_pad(line))
+            for _ in range(open_times):
+                self.last_starts_at.append(get_left_pad(line))
 
-            # Last character on a line is a newline (\n). Get second to last.
-            last_index = len(line) - 2
-            if line[last_index] != open_character:
-                e = _error(line_number + 1, last_index, error_code)
+            # Multiple opening characters
+            if open_times > 1:
+                e = _error(line_number + 1, 0, error_code)
                 self.errors.append(e)
+
+            # One opening character, but content after it.
+            else:
+                # Last character on a line is newline (\n). Get second to last.
+                last_index = len(line) - 2
+                if line[last_index] != open_character:
+                    e = _error(line_number + 1, last_index, error_code)
+                    self.errors.append(e)
 
     def _get_closing_index(self, line: str, close_character: str) -> int:
         """Get the line index for a closing character.
