@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.6] - 2019-07-29
+
+### Fixed
+- Handle situation where end character is at EOF
+- Display correct error if line has multiple opening characters without any closing characters
+
 ## [0.0.5] - 2019-07-15
 
 ### Fixed
