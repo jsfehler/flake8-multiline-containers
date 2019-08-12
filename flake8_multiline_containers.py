@@ -62,10 +62,10 @@ class MultilineContainers:
         close_matches_in_string = 0
 
         for match in STRING_REGEX.finditer(line):
-            for i in match.groups():
-                if i is not None:
-                    open_matches_in_string += i.count(open_character)
-                    close_matches_in_string += i.count(close_character)
+            i = match.group(0)
+            if i is not None:
+                open_matches_in_string += i.count(open_character)
+                close_matches_in_string += i.count(close_character)
 
         open_times = line.count(open_character)
         close_times = line.count(close_character)
