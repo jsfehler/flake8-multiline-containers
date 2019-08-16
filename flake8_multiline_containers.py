@@ -197,15 +197,12 @@ class MultilineContainers:
         elif close_times > 0 and open_times == 0:
             index = self._get_closing_index(line, close_character)
 
-            try:
-                if index != self.last_starts_at[-1]:
-                    e = _error(line_number + 1, index, error_code)
-                    self.errors.append(e)
+            if index != self.last_starts_at[-1]:
+                e = _error(line_number + 1, index, error_code)
+                self.errors.append(e)
 
-                # Remove the last start location
-                self.last_starts_at.pop()
-            except Exception:
-                raise Exception(line)
+            # Remove the last start location
+            self.last_starts_at.pop()
 
     def check_for_js101(self, line_number: int, line: str):
         """Validate JS101 for a single line.
