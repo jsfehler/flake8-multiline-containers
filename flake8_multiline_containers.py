@@ -42,11 +42,11 @@ class MultilineContainers:
 
     errors = attr.ib(factory=list)
 
-    # The column where the last line that opened started
+    # The column where the last line that opened started.
     last_starts_at = attr.ib(factory=list)
 
-    # Flag for JS101 and JS102
-    inside_function = attr.ib(default=False)
+    # The number of functions deep we currently are in.
+    function_depth = attr.ib(default=0)
 
     def _number_of_matches_in_line(
             self,
@@ -112,14 +112,12 @@ class MultilineContainers:
 
         # Tuples, functions, and classes all use lunula brackets.
         # Ensure only tuples are caught by JS101.
-        if open_character == '(':
-            for match in FUNCTION_CALL_REGEX.finditer(line):
-                if match.group(0) is not None:
-                    # When inside a function with multiline arguments,
-                    # ignore the opening bracket
-                    self.inside_function = True
-                    if open_times != close_times:
-                        open_times -= 1
+        if open_character == '(' and FUNCTION_CALL_REGEX.search(line):
+            # When inside a function with multiline arguments,
+            # ignore the opening bracket
+            self.function_depth += 1
+            if open_times != close_times:
+                open_times -= 1
 
         # Multiline container detected
         if open_times >= 1 and open_times != close_times:
@@ -191,20 +189,23 @@ class MultilineContainers:
         # When inside a function call,
         # Then if a closing bracket is found and tuples are closed,
         # Assume it's the closing bracket for the call.
-        if open_character == '(' and self.inside_function:
+        if open_character == '(' and self.function_depth > 0:
             if close_times >= 1 and len(self.last_starts_at) == 0:
                 close_times -= 1
-                self.inside_function = False
+                self.function_depth -= 1
 
-        if close_times > 0 and open_times == 0:
+        elif close_times > 0 and open_times == 0:
             index = self._get_closing_index(line, close_character)
 
-            if index != self.last_starts_at[-1]:
-                e = _error(line_number + 1, index, error_code)
-                self.errors.append(e)
+            try:
+                if index != self.last_starts_at[-1]:
+                    e = _error(line_number + 1, index, error_code)
+                    self.errors.append(e)
 
-            # Remove the last start location
-            self.last_starts_at.pop()
+                # Remove the last start location
+                self.last_starts_at.pop()
+            except Exception:
+                raise Exception(line)
 
     def check_for_js101(self, line_number: int, line: str):
         """Validate JS101 for a single line.
