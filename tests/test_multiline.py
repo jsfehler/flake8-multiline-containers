@@ -20,6 +20,11 @@ def set_file_path():
     return 'tests/dummy/set_examples.py'
 
 
+@pytest.fixture
+def tuple_file_path():
+    return 'tests/dummy/tuple_examples.py'
+
+
 def test_js101_dict(dict_file_path):
     style_guide = flake8.get_style_guide(
         select=['JS101'],
@@ -28,7 +33,7 @@ def test_js101_dict(dict_file_path):
     p = os.path.abspath(dict_file_path)
     r = style_guide.check_files([p])
 
-    assert 3 == r.total_errors
+    assert 4 == r.total_errors
 
 
 def test_js102_dict(dict_file_path):
@@ -39,7 +44,7 @@ def test_js102_dict(dict_file_path):
     p = os.path.abspath(dict_file_path)
     r = style_guide.check_files([p])
 
-    assert 3 == r.total_errors
+    assert 4 == r.total_errors
 
 
 def test_js101_list(list_file_path):
@@ -81,6 +86,28 @@ def test_js102_set(set_file_path):
     )
 
     p = os.path.abspath(set_file_path)
+    r = style_guide.check_files([p])
+
+    assert 3 == r.total_errors
+
+
+def test_js101_tuple(tuple_file_path):
+    style_guide = flake8.get_style_guide(
+        select=['JS101'],
+    )
+
+    p = os.path.abspath(tuple_file_path)
+    r = style_guide.check_files([p])
+
+    assert 3 == r.total_errors
+
+
+def test_js102_tuple(tuple_file_path):
+    style_guide = flake8.get_style_guide(
+        select=['JS102'],
+    )
+
+    p = os.path.abspath(tuple_file_path)
     r = style_guide.check_files([p])
 
     assert 3 == r.total_errors

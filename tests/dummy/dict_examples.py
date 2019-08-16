@@ -34,3 +34,31 @@ foo = {'a': 'hello',
 foo = {'a': 'hello',
        'b': 'world',
       }
+
+
+# Function call with dict inside
+
+# Right
+foo = bizbat({'a': 'Hello', 'b': 'World'}, True)
+
+# Right
+foo = bizbat(
+    {'a': 'Hello', 'b': 'World'},
+    True,
+)
+
+# Right
+foo = bizbat(
+    {
+        'a': 'Hello',
+        'b': 'World'
+    },
+    True,
+)
+
+# Wrong: JS101, JS102
+foo = bizbat(
+    {'a': 'Hello',
+     'b': 'World'},
+    True,
+)

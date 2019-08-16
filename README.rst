@@ -5,7 +5,7 @@ flake8-multiline-containers
 .. image:: https://img.shields.io/pypi/v/flake8-multiline-containers.svg
     :target: https://pypi.org/project/flake8-multiline-containers
     :alt: PyPI
-    
+
 .. image:: https://img.shields.io/pypi/pyversions/flake8-multiline-containers.svg
     :alt: PyPI - Python Version
     :target: https://github.com/jsfehler/flake8-multiline-containers

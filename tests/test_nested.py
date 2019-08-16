@@ -20,6 +20,11 @@ def set_file_path():
     return 'tests/dummy/nested_set_examples.py'
 
 
+@pytest.fixture
+def tuple_file_path():
+    return 'tests/dummy/nested_tuple_examples.py'
+
+
 def test_js101_dict(dict_file_path):
     style_guide = flake8.get_style_guide(
         select=['JS101'],
@@ -81,6 +86,28 @@ def test_js102_set(set_file_path):
     )
 
     p = os.path.abspath(set_file_path)
+    r = style_guide.check_files([p])
+
+    assert 2 == r.total_errors
+
+
+def test_js101_tuple(tuple_file_path):
+    style_guide = flake8.get_style_guide(
+        select=['JS101'],
+    )
+
+    p = os.path.abspath(tuple_file_path)
+    r = style_guide.check_files([p])
+
+    assert 3 == r.total_errors
+
+
+def test_js102_tuple(tuple_file_path):
+    style_guide = flake8.get_style_guide(
+        select=['JS102'],
+    )
+
+    p = os.path.abspath(tuple_file_path)
     r = style_guide.check_files([p])
 
     assert 2 == r.total_errors

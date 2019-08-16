@@ -4,9 +4,14 @@ import re
 import attr
 
 
+# Matches anything inside a string.
 STRING_REGEX = re.compile(
     r'"([^"\\]*(\\.[^"\\]*)*)"|\'([^\'\\]*(\\.[^\'\\]*)*)\'',
 )
+
+# Matches anything that looks like a:
+# function call, function definition, or class definition with inheritance
+FUNCTION_CALL_REGEX = re.compile(r'\s*\w+[(]')
 
 
 class ErrorCodes(enum.Enum):
@@ -37,8 +42,11 @@ class MultilineContainers:
 
     errors = attr.ib(factory=list)
 
-    # The column where the last line that opened started
+    # The column where the last line that opened started.
     last_starts_at = attr.ib(factory=list)
+
+    # The number of functions deep we currently are in.
+    function_depth = attr.ib(default=0)
 
     def _number_of_matches_in_line(
             self,
@@ -101,6 +109,15 @@ class MultilineContainers:
         open_times, close_times = self._number_of_matches_in_line(
             open_character, close_character, line,
         )
+
+        # Tuples, functions, and classes all use lunula brackets.
+        # Ensure only tuples are caught by JS101.
+        if open_character == '(' and FUNCTION_CALL_REGEX.search(line):
+            # When inside a function with multiline arguments,
+            # ignore the opening bracket
+            self.function_depth += 1
+            if open_times != close_times:
+                open_times -= 1
 
         # Multiline container detected
         if open_times >= 1 and open_times != close_times:
@@ -169,7 +186,15 @@ class MultilineContainers:
             open_character, close_character, line,
         )
 
-        if close_times > 0 and open_times == 0:
+        # When inside a function call,
+        # Then if a closing bracket is found and tuples are closed,
+        # Assume it's the closing bracket for the call.
+        if open_character == '(' and self.function_depth > 0:
+            if close_times >= 1 and len(self.last_starts_at) == 0:
+                close_times -= 1
+                self.function_depth -= 1
+
+        elif close_times > 0 and open_times == 0:
             index = self._get_closing_index(line, close_character)
 
             if index != self.last_starts_at[-1]:
@@ -188,6 +213,7 @@ class MultilineContainers:
         """
         self._check_opening('{', '}', line_number, line, ErrorCodes.JS101)
         self._check_opening('[', ']', line_number, line, ErrorCodes.JS101)
+        self._check_opening('(', ')', line_number, line, ErrorCodes.JS101)
 
     def check_for_js102(self, line_number: int, line: str):
         """Validate JS102 for a single line.
@@ -199,6 +225,7 @@ class MultilineContainers:
         """
         self._check_closing('{', '}', line_number, line, ErrorCodes.JS102)
         self._check_closing('[', ']', line_number, line, ErrorCodes.JS102)
+        self._check_closing('(', ')', line_number, line, ErrorCodes.JS102)
 
     def docstring_status(self, line: str, quote: str, last_status: int) -> int:
         """Check if a line is part of a docstring.
