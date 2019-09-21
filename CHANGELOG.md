@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.7] - 2019-09-21
+
+### Added
+- Tuples are now also validated as part of 101 and 102 checks
+
+### Fixed
+- False positive on type annotation and regex
+
 ## [0.0.6] - 2019-07-29
 
 ### Fixed
