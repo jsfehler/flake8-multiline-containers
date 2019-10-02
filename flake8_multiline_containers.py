@@ -14,6 +14,10 @@ STRING_REGEX = re.compile(
 # Actual tuples should be ignored
 FUNCTION_CALL_REGEX = r'\s*\w+[(]'
 
+# Matches anything that looks like a conditional block
+CONDITIONAL_BLOCK_REGEX = re.compile(
+    r'if\s*[(]|elif\s*[(]|or\s*[(]*[(]|and\s*[(]|not\s*[(]')
+
 
 class ErrorCodes(enum.Enum):
     JS101 = "Multi-line container not broken after opening character"
@@ -48,6 +52,8 @@ class MultilineContainers:
 
     # The number of functions deep we currently are in.
     function_depth = attr.ib(default=0)
+
+    inside_conditional_block = attr.ib(default=0)
 
     def _number_of_matches_in_line(
             self,
@@ -124,6 +130,12 @@ class MultilineContainers:
             if open_times != close_times:
                 open_times -= 1
 
+        # If detected a conditional block, ignore it
+        if open_character == '(' and CONDITIONAL_BLOCK_REGEX.search(line):
+            self.inside_conditional_block += 1
+            if open_times != close_times:
+                open_times -= 1
+
         # Multiline container detected
         if open_times >= 1 and open_times != close_times:
             for _ in range(open_times):
@@ -190,6 +202,10 @@ class MultilineContainers:
         open_times, close_times = self._number_of_matches_in_line(
             open_character, close_character, line,
         )
+
+        if close_times > 0 and self.inside_conditional_block:
+            close_times -= 1
+            self.inside_conditional_block -= 1
 
         # When inside a function call,
         # Then if a closing bracket is found and tuples are closed,
