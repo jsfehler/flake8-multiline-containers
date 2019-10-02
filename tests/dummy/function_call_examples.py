@@ -1,3 +1,13 @@
+# Right: Nested function call is ignored
+bizbat(bazbin("""
+"""))
+
+
+# Right: Nested function call is ignored
+bizbat(bazbin('a',
+'b'))
+
+
 # Right: Opens and closes on same line
 foo = bizbat('hello', 'world')
 

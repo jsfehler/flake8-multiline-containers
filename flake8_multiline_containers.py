@@ -112,12 +112,13 @@ class MultilineContainers:
 
         # Tuples, functions, and classes all use lunula brackets.
         # Ensure only tuples are caught by JS101.
-        if open_character == '(' and FUNCTION_CALL_REGEX.search(line):
-            # When inside a function with multiline arguments,
-            # ignore the opening bracket
-            self.function_depth += 1
-            if open_times != close_times:
-                open_times -= 1
+        if open_character == '(':
+            for item in re.finditer(r'\s*\w+[(]', line):
+                # When inside a function with multiline arguments,
+                # ignore the opening bracket
+                self.function_depth += 1
+                if open_times != close_times:
+                    open_times -= 1
 
         # Multiline container detected
         if open_times >= 1 and open_times != close_times:
