@@ -6,8 +6,8 @@ import pytest
 
 
 @pytest.fixture
-def multiple_opening_file_path():
-    return 'tests/dummy/multiple_opening.py'
+def multiple_opening_file_path(dummy_file_path):
+    return f'{dummy_file_path}/multiple_opening.py'
 
 
 def test_js101_multiple_opening(multiple_opening_file_path):

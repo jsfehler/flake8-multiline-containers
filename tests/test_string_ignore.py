@@ -6,13 +6,13 @@ import pytest
 
 
 @pytest.fixture
-def string_file_path():
-    return 'tests/dummy/string_examples.py'
+def string_file_path(dummy_file_path):
+    return f'{dummy_file_path}/string/string.py'
 
 
 @pytest.fixture
-def string_brackets_file_path():
-    return 'tests/dummy/string_brackets_examples.py'
+def string_brackets_file_path(dummy_file_path):
+    return f'{dummy_file_path}/string/string_brackets.py'
 
 
 def test_js101_string_ignore(string_file_path):

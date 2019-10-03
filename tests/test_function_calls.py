@@ -6,8 +6,8 @@ import pytest
 
 
 @pytest.fixture
-def function_calls_file_path():
-    return 'tests/dummy/function_call_examples.py'
+def function_calls_file_path(dummy_file_path):
+    return f'{dummy_file_path}/callable/function_call.py'
 
 
 def test_js101_function_calls_ignored(function_calls_file_path):

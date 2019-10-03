@@ -6,8 +6,8 @@ import pytest
 
 
 @pytest.fixture
-def comments_file_path():
-    return 'tests/dummy/comments.py'
+def comments_file_path(dummy_file_path):
+    return f'{dummy_file_path}/comments.py'
 
 
 def test_js101_comments_ignore(comments_file_path):

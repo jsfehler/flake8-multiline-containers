@@ -6,8 +6,8 @@ import pytest
 
 
 @pytest.fixture
-def function_def_file_path():
-    return 'tests/dummy/function_def_examples.py'
+def function_def_file_path(dummy_file_path):
+    return f'{dummy_file_path}/callable/function_def.py'
 
 
 def test_js101_function_def_ignored(function_def_file_path):
