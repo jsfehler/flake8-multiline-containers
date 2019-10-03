@@ -11,7 +11,8 @@ STRING_REGEX = re.compile(
 
 # Matches anything that looks like a:
 # function call, function definition, or class definition with inheritance
-FUNCTION_CALL_REGEX = re.compile(r'\s*\w+[(]')
+# Actual tuples should be ignored
+FUNCTION_CALL_REGEX = r'\s*\w+[(]'
 
 
 class ErrorCodes(enum.Enum):
@@ -112,7 +113,7 @@ class MultilineContainers:
 
         # Tuples, functions, and classes all use lunula brackets.
         # Ensure only tuples are caught by JS101.
-        if open_character == '(' and FUNCTION_CALL_REGEX.search(line):
+        for _ in re.finditer(FUNCTION_CALL_REGEX, line):
             # When inside a function with multiline arguments,
             # ignore the opening bracket
             self.function_depth += 1
