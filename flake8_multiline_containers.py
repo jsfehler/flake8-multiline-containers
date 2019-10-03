@@ -70,6 +70,10 @@ class MultilineContainers:
         open_matches_in_string = 0
         close_matches_in_string = 0
 
+        # Find comments and make sure they're ignored
+        line = line.split('#')[0]
+
+        # Find strings and make sure they're ignored
         for match in STRING_REGEX.finditer(line):
             i = match.group(0)
             if i is not None:
