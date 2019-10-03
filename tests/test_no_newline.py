@@ -6,8 +6,8 @@ import pytest
 
 
 @pytest.fixture
-def no_newline_file_path():
-    return 'tests/dummy/no_newline.py'
+def no_newline_file_path(dummy_file_path):
+    return f'{dummy_file_path}/no_newline.py'
 
 
 def test_js101_no_newline(no_newline_file_path):

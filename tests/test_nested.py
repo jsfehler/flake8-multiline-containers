@@ -6,23 +6,23 @@ import pytest
 
 
 @pytest.fixture
-def dict_file_path():
-    return 'tests/dummy/nested_dict_examples.py'
+def dict_file_path(dummy_file_path):
+    return f'{dummy_file_path}/dict/nested_dict.py'
 
 
 @pytest.fixture
-def list_file_path():
-    return 'tests/dummy/nested_list_examples.py'
+def list_file_path(dummy_file_path):
+    return f'{dummy_file_path}/list/nested_list.py'
 
 
 @pytest.fixture
-def set_file_path():
-    return 'tests/dummy/nested_set_examples.py'
+def set_file_path(dummy_file_path):
+    return f'{dummy_file_path}/set/nested_set.py'
 
 
 @pytest.fixture
-def tuple_file_path():
-    return 'tests/dummy/nested_tuple_examples.py'
+def tuple_file_path(dummy_file_path):
+    return f'{dummy_file_path}/tuple/nested_tuple.py'
 
 
 def test_js101_dict(dict_file_path):

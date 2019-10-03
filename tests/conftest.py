@@ -8,3 +8,8 @@ def linter():
     m = MultilineContainers()
     m.errors = []
     return m
+
+
+@pytest.fixture
+def dummy_file_path():
+    return 'tests/dummy'

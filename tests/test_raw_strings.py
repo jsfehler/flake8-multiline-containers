@@ -6,8 +6,8 @@ import pytest
 
 
 @pytest.fixture
-def raw_strings_file_path():
-    return 'tests/dummy/raw_strings.py'
+def raw_strings_file_path(dummy_file_path):
+    return f'{dummy_file_path}/string/raw_strings.py'
 
 
 def test_js101_raw_strings(raw_strings_file_path):

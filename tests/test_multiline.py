@@ -6,23 +6,23 @@ import pytest
 
 
 @pytest.fixture
-def dict_file_path():
-    return 'tests/dummy/dict_examples.py'
+def dict_file_path(dummy_file_path):
+    return f'{dummy_file_path}/dict/dict.py'
 
 
 @pytest.fixture
-def list_file_path():
-    return 'tests/dummy/list_examples.py'
+def list_file_path(dummy_file_path):
+    return f'{dummy_file_path}/list/list.py'
 
 
 @pytest.fixture
-def set_file_path():
-    return 'tests/dummy/set_examples.py'
+def set_file_path(dummy_file_path):
+    return f'{dummy_file_path}/set/set.py'
 
 
 @pytest.fixture
-def tuple_file_path():
-    return 'tests/dummy/tuple_examples.py'
+def tuple_file_path(dummy_file_path):
+    return f'{dummy_file_path}/tuple/tuple.py'
 
 
 def test_js101_dict(dict_file_path):

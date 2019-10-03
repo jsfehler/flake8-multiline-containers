@@ -6,8 +6,8 @@ import pytest
 
 
 @pytest.fixture
-def docstring_file_path():
-    return 'tests/dummy/docstrings.py'
+def docstring_file_path(dummy_file_path):
+    return f'{dummy_file_path}/docstrings.py'
 
 
 def test_docstring_ignore(docstring_file_path):
