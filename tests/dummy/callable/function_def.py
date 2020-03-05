@@ -1,3 +1,14 @@
+# Right: Extra whitespace doesn't cause function to be registered as a tuple
+def foo (a,
+         b,
+         c,
+): pass
+
+def foo     (a,
+         b,
+         c,
+): pass
+
 # Right: Function without any arguments.
 def foo():
     pass

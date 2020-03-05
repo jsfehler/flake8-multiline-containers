@@ -1,3 +1,10 @@
+# Right: Extra whitespace doesn't cause function to be registered as a tuple
+bizbat ( "Hello",
+         "World")
+
+bizbat        ( "Hello",
+         "World")
+
 # Right: Nested function call is ignored
 bizbat(bazbin("""
 """))
