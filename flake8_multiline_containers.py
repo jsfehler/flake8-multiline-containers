@@ -12,7 +12,7 @@ STRING_REGEX = re.compile(
 # Matches anything that looks like a:
 # function call, function definition, or class definition with inheritance
 # Actual tuples should be ignored
-FUNCTION_CALL_REGEX = r'\s*\w+[(]'
+FUNCTION_CALL_REGEX = r'\w+\s*[(]'
 
 # Matches anything that looks like a conditional block
 CONDITIONAL_BLOCK_REGEX = re.compile(
