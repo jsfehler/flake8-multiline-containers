@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.8] - 2020-03-06
+
+### Fixed
+- Handle nested function calls
+- Ignore conditional blocks
+- Ignore function calls with strange whitespace
+
 ## [0.0.7] - 2019-09-21
 
 ### Added
