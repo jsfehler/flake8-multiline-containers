@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.9] - 2020-03-09
+
+### Fixed
+- Only check for function calls when checking lunula brackets
+
 ## [0.0.8] - 2020-03-06
 
 ### Fixed

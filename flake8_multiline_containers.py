@@ -39,7 +39,7 @@ class MultilineContainers:
     """Ensure the consistency of multiline dict and list style."""
 
     name = 'flake8_multiline_containers'
-    version = '0.0.7'
+    version = '0.0.9'
 
     tree = attr.ib(default=None)
     filename = attr.ib(default="(none)")
