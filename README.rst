@@ -10,12 +10,12 @@ flake8-multiline-containers
     :alt: PyPI - Python Version
     :target: https://github.com/jsfehler/flake8-multiline-containers
 
-.. image:: https://img.shields.io/github/license/jsfehler/stere.svg
+.. image:: https://img.shields.io/github/license/jsfehler/flake8-multiline-containers.svg
     :alt: GitHub
-    :target: https://github.com/jsfehler/stere/blob/master/LICENSE
+    :target: https://github.com/jsfehler/flake8-multiline-containers/blob/master/LICENSE
 
-.. image:: https://pyup.io/repos/github/jsfehler/stere/shield.svg
-    :target: https://pyup.io/repos/github/jsfehler/stere
+.. image:: https://pyup.io/repos/github/jsfehler/flake8-multiline-containers/shield.svg
+    :target: https://pyup.io/repos/github/jsfehler/flake8-multiline-containers
     :alt: Updates
 
 .. image:: https://travis-ci.org/jsfehler/flake8-multiline-containers.svg?branch=master
