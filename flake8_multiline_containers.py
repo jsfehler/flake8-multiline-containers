@@ -76,8 +76,22 @@ class MultilineContainers:
         open_matches_in_string = 0
         close_matches_in_string = 0
 
+        # Whole line is a comment, so ignore it
+        if re.search(r'^\s*#', line):
+            return 0, 0
+
         # Find comments and make sure they're ignored
-        line = line.split('#')[0]
+        # Remove strings from temp_line
+        temp_line = STRING_REGEX.sub('', line)
+
+        # Find comments in temp_line, remove them from line
+        last_line = temp_line
+        for match in re.finditer(r'#.*', temp_line):
+            i = match.group(0)
+            if i is not None:
+                last_line = last_line.replace(i, '')
+
+        line = last_line
 
         # Find strings and make sure they're ignored
         for match in STRING_REGEX.finditer(line):
