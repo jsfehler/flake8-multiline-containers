@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.10] - 2020-03-11
+
+### Fixed
+
+- Pound sign in a string shouldn't be detected as start of comment block
+
 ## [0.0.9] - 2020-03-09
 
 ### Fixed
