@@ -9,4 +9,4 @@ flake8-eradicate==0.2.0
 flake8-per-file-ignores==0.8.1
 flake8-import-order==0.18.1
 flake8-mutable==1.2.0
-pep8-naming==0.9.1
+pep8-naming==0.10.0
