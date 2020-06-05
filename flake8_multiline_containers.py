@@ -153,8 +153,9 @@ class MultilineContainers:
 
         # Multiline container detected
         if open_times >= 1 and open_times != close_times:
-            for _ in range(open_times):
-                self.last_starts_at.append(get_left_pad(line))
+            self.last_starts_at.extend(
+                [get_left_pad(line)] * open_times,
+            )
 
             # Multiple opening characters
             if open_times > 1:
