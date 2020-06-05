@@ -1,8 +1,10 @@
 import enum
+import itertools
 import re
+import token
+from typing import List, Tuple
 
 import attr
-
 
 # Matches anything inside a string.
 STRING_REGEX = re.compile(
@@ -38,6 +40,65 @@ def get_left_pad(line: str) -> int:
     return len(line) - len(line.lstrip(' '))
 
 
+def _is_assignment(line: str, index: int) -> bool:
+    if index < 1:
+        return True
+
+    return line[index - 1:index + 1] not in token.EXACT_TOKEN_TYPES
+
+
+def analyse_line(characters: str, line: str) -> List[Tuple[str, int]]:
+    """Scan line and check how many times each character appears.
+
+    Characters inside strings are ignored.
+
+    Arguments:
+        characters: Characters to find the locations of.
+        line: The line to check.
+
+    Returns:
+        list of tuples containing the character and its position
+
+    """
+    # Build a list of places where there are string literals, so that we
+    # don't look inside strings.
+    banned_ranges = [
+        (match.start(0), match.end(0))
+        for match in STRING_REGEX.finditer(line)
+    ]
+    positions = [0, *itertools.chain(*banned_ranges), len(line)]
+    good_ranges = zip(positions[::2], positions[1::2])
+
+    result = []
+    for start, stop in good_ranges:
+        comment_index = line.find('#', start, stop)
+        if comment_index >= 0:
+            stop = comment_index
+
+        assign_index = line.rfind('=', start, stop)
+        if assign_index >= 0 and _is_assignment(line, assign_index):
+            # Everything before this point was on the left hand side of an
+            # assignment
+            result = []
+            start = assign_index
+
+        for char in characters:
+            char_start = start
+            index = line.find(char, char_start, stop)
+            while index >= 0:
+                result.append((char, index))
+                char_start = index + 1
+                index = line.find(char, char_start, stop)
+
+        if comment_index >= 0:
+            # Rest of line is a comment
+            break
+
+    result.sort(key=lambda x: x[1])
+
+    return result
+
+
 @attr.s(hash=False)
 class MultilineContainers:
     """Ensure the consistency of multiline dict and list style."""
@@ -60,61 +121,18 @@ class MultilineContainers:
     inside_conditional_block = attr.ib(default=0)
 
     def _number_of_matches_in_line(
-            self,
-            open_character: str,
-            close_character: str,
-            line: str) -> tuple:
-        """Scan line and check how many times each character appears.
+        self,
+        open_character: str,
+        close_character: str,
+        line_analysis: List[Tuple[str, int]],
+    ) -> Tuple[int, int]:
+        open_times, close_times = 0, 0
 
-        Characters inside strings are ignored.
-
-        Arguments:
-            open_character: Opening character for the container.
-            close_character: Closing character for the container.
-            line: The line to check.
-
-        Returns:
-            tuple
-
-        """
-        open_matches_in_string = 0
-        close_matches_in_string = 0
-
-        # Whole line is a comment, so ignore it
-        if re.search(r'^\s*#', line):
-            return 0, 0
-
-        # Find comments and make sure they're ignored
-        # Remove strings from temp_line
-        temp_line = STRING_REGEX.sub('', line)
-
-        # Find comments in temp_line, remove them from line
-        last_line = temp_line
-        for match in re.finditer(r'#.*', temp_line):
-            i = match.group(0)
-            if i is not None:
-                last_line = last_line.replace(i, '')
-
-        line = last_line
-
-        # Only scan the part of the line after assignment
-        matched = ASSIGNMENT_REGEX.search(line)
-        if matched:
-            line = matched.group(2)
-
-        # Find strings and make sure they're ignored
-        for match in STRING_REGEX.finditer(line):
-            i = match.group(0)
-            if i is not None:
-                open_matches_in_string += i.count(open_character)
-                close_matches_in_string += i.count(close_character)
-
-        open_times = line.count(open_character)
-        close_times = line.count(close_character)
-
-        # Any time the open or close character appear in a string, ignore them.
-        open_times -= open_matches_in_string
-        close_times -= close_matches_in_string
+        for char, _ in line_analysis:
+            if char == open_character:
+                open_times += 1
+            elif char == close_character:
+                close_times += 1
 
         return open_times, close_times
 
@@ -124,6 +142,7 @@ class MultilineContainers:
         close_character: str,
         line_number: int,
         line: str,
+        line_analysis: List[Tuple[str, int]],
         error_code: ErrorCodes,
     ):
         """Implementation for JS101.
@@ -137,11 +156,12 @@ class MultilineContainers:
             close_character: Closing character for the container.
             line_number: The number of the line. Reported back to flake8.
             line: The line to check.
+            line_analysis: The analysis result of the line to check.
             error_code: The error to report if the validation fails.
 
         """
         open_times, close_times = self._number_of_matches_in_line(
-            open_character, close_character, line,
+            open_character, close_character, line_analysis,
         )
 
         # Tuples, functions, and classes all use lunula brackets.
@@ -179,36 +199,36 @@ class MultilineContainers:
                     e = _error(line_number + 1, last_index, error_code)
                     self.errors.append(e)
 
-    def _get_closing_index(self, line: str, close_character: str) -> int:
+    def _get_closing_index(
+        self,
+        line_analysis: List[Tuple[str, int]],
+        close_character: str,
+    ) -> int:
         """Get the line index for a closing character.
 
         The last, second to last, or third to last character on the line should
         be the closing character. Depends if there was a comma and/or newline.
 
         Arguments:
-            line: The line to check.
+            line_analysis: The analysis result of the line to check.
             close_character: Closing character for the container.
 
         Returns:
             int
 
         """
-        slices = [-1, -2, -3]
-        index = get_left_pad(line)
+        for char, index in reversed(line_analysis):
+            if char == close_character:
+                return index
 
-        for s in slices:
-            if line[s] == close_character:
-                index = len(line) + s
-                break
-
-        return index
+        return 0
 
     def _check_closing(
         self,
         open_character: str,
         close_character: str,
         line_number: int,
-        line: str,
+        line_analysis: List[Tuple[str, int]],
         error_code: ErrorCodes,
     ):
         """Implementation for JS102.
@@ -220,12 +240,12 @@ class MultilineContainers:
             open_character: Opening character for the container.
             close_character: Closing character for the container.
             line_number: The number of the line. Reported back to flake8.
-            line: The line to check.
+            line_analysis: The analysis result of the line to check.
             error_code: The error to report if the validation fails.
 
         """
         open_times, close_times = self._number_of_matches_in_line(
-            open_character, close_character, line,
+            open_character, close_character, line_analysis,
         )
 
         if close_times > 0 and self.inside_conditional_block:
@@ -241,7 +261,7 @@ class MultilineContainers:
                 self.function_depth -= 1
 
         elif close_times > 0 and open_times == 0 and self.last_starts_at:
-            index = self._get_closing_index(line, close_character)
+            index = self._get_closing_index(line_analysis, close_character)
 
             if index != self.last_starts_at[-1]:
                 e = _error(line_number + 1, index, error_code)
@@ -250,18 +270,48 @@ class MultilineContainers:
             # Remove the last start location
             self.last_starts_at.pop()
 
-    def check_for_js101(self, line_number: int, line: str):
+    def check_for_js101(
+        self,
+        line_number: int,
+        line: str,
+        line_analysis: List[Tuple[str, int]],
+    ):
         """Validate JS101 for a single line.
 
         When a line opens a container
         And the container isn't closed on the same line
         Then the line should break after the opening brackets
         """
-        self._check_opening('{', '}', line_number, line, ErrorCodes.JS101)
-        self._check_opening('[', ']', line_number, line, ErrorCodes.JS101)
-        self._check_opening('(', ')', line_number, line, ErrorCodes.JS101)
+        self._check_opening(
+            '{',
+            '}',
+            line_number,
+            line,
+            line_analysis,
+            ErrorCodes.JS101,
+        )
+        self._check_opening(
+            '[',
+            ']',
+            line_number,
+            line,
+            line_analysis,
+            ErrorCodes.JS101,
+        )
+        self._check_opening(
+            '(',
+            ')',
+            line_number,
+            line,
+            line_analysis,
+            ErrorCodes.JS101,
+        )
 
-    def check_for_js102(self, line_number: int, line: str):
+    def check_for_js102(
+        self,
+        line_number: int,
+        line_analysis: List[Tuple[str, int]],
+    ):
         """Validate JS102 for a single line.
 
         When a line closes a container
@@ -269,9 +319,27 @@ class MultilineContainers:
         Then the closing character must be on the same column as the
         opening line
         """
-        self._check_closing('{', '}', line_number, line, ErrorCodes.JS102)
-        self._check_closing('[', ']', line_number, line, ErrorCodes.JS102)
-        self._check_closing('(', ')', line_number, line, ErrorCodes.JS102)
+        self._check_closing(
+            '{',
+            '}',
+            line_number,
+            line_analysis,
+            ErrorCodes.JS102,
+        )
+        self._check_closing(
+            '[',
+            ']',
+            line_number,
+            line_analysis,
+            ErrorCodes.JS102,
+        )
+        self._check_closing(
+            '(',
+            ')',
+            line_number,
+            line_analysis,
+            ErrorCodes.JS102,
+        )
 
     def docstring_status(self, line: str, quote: str, last_status: int) -> int:
         """Check if a line is part of a docstring.
@@ -328,8 +396,10 @@ class MultilineContainers:
             )
 
             if single_quote_status == 0 and double_quote_status == 0:
-                self.check_for_js101(index, line)
-                self.check_for_js102(index, line)
+                line_analysis = analyse_line('{([])}', line)
+
+                self.check_for_js101(index, line, line_analysis)
+                self.check_for_js102(index, line_analysis)
 
         for e in self.errors:
             yield e
