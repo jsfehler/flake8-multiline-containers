@@ -5,6 +5,14 @@ bizbat ( "Hello",
 bizbat        ( "Hello",
          "World")
 
+# Right
+# Function call containing parens around a long string
+func(
+    (
+        "long string such that we use parens"
+    ),
+)
+
 # Right: Nested function call is ignored
 bizbat(bazbin("""
 """))

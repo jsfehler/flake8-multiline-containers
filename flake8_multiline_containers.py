@@ -230,7 +230,7 @@ class MultilineContainers:
                 close_times -= 1
                 self.function_depth -= 1
 
-        elif close_times > 0 and open_times == 0:
+        elif close_times > 0 and open_times == 0 and self.last_starts_at:
             index = self._get_closing_index(line, close_character)
 
             if index != self.last_starts_at[-1]:
