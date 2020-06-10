@@ -13,6 +13,22 @@ foo = {
     'a': 'hello', 'b': 'world',
 }
 
+# Right: Index after creation
+foo = {
+    'a': 'hello',
+    'b': 'world',
+}['a']
+
+# Right: Index after creation
+try:
+    foo = {
+        'a': 'hello',
+        'b': 'world',
+    }['a']
+
+except KeyError:
+    pass
+
 
 # Wrong: JS101
 foo = {'a': 'hello',

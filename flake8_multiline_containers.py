@@ -185,7 +185,7 @@ class MultilineContainers:
 
         """
         slices = [-1, -2, -3]
-        index = 0
+        index = get_left_pad(line)
 
         for s in slices:
             if line[s] == close_character:
