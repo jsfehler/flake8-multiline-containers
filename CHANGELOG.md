@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.11] - 2020-06-10
+
+### Changed
+
+- Small speed improvement by removing left padding calculation from loop
+
+### Fixed
+
+- No false positive on closing parenthesis-wrapped expression inside a call
+- No false positive on closing index check inside blocks
+
 ## [0.0.10] - 2020-03-11
 
 ### Fixed
