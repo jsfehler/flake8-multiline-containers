@@ -18,6 +18,10 @@ FUNCTION_CALL_REGEX = r'\w+\s*[(]'
 CONDITIONAL_BLOCK_REGEX = re.compile(
     r'if\s*[(]|elif\s*[(]|or\s*[(]*[(]|and\s*[(]|not\s*[(]')
 
+# Matches anything that looks like a variable assignment, ie: foo = [1, 2, 3]
+# Ignores equality comparison, ie: foo == [1, 2, 3]
+ASSIGNMENT_REGEX = re.compile(r'([^=])=([^=]*$)')
+
 
 class ErrorCodes(enum.Enum):
     JS101 = "Multi-line container not broken after opening character"
@@ -94,9 +98,9 @@ class MultilineContainers:
         line = last_line
 
         # Only scan the part of the line after assignment
-        line = line.split('=')[-1]
-        if len(line) == 1:
-            return 0, 0
+        matched = ASSIGNMENT_REGEX.search(line)
+        if matched:
+            line = matched.group(2)
 
         # Find strings and make sure they're ignored
         for match in STRING_REGEX.finditer(line):
