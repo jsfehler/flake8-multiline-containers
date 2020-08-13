@@ -98,9 +98,11 @@ class MultilineContainers:
         line = last_line
 
         # Only scan the part of the line after assignment
-        matched = ASSIGNMENT_REGEX.search(line)
-        if matched:
-            line = matched.group(2)
+        # If inside a function call, then it's not a variable assignment
+        if not self.function_depth:
+            matched = ASSIGNMENT_REGEX.search(line)
+            if matched:
+                line = matched.group(2)
 
         # Find strings and make sure they're ignored
         for match in STRING_REGEX.finditer(line):
