@@ -93,6 +93,11 @@ class MultilineContainers:
 
         line = last_line
 
+        # Only scan the part of the line after assignment
+        line = line.split('=')[-1]
+        if len(line) == 1:
+            return 0, 0
+
         # Find strings and make sure they're ignored
         for match in STRING_REGEX.finditer(line):
             i = match.group(0)
