@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.14] - 2020-08-13
+
+### Fixed
+
+- Handle cases where lists have nested lists with function calls
+
 ## [0.0.13] - 2020-08-13
 
 ### Fixed
