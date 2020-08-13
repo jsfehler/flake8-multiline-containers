@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.13] - 2020-08-13
+
+### Fixed
+
+- No false positive when a list comprehension has an equality comparison
+
 ## [0.0.12] - 2020-08-13
 
 ### Fixed
