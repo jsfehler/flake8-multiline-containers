@@ -61,3 +61,27 @@ bar = foo['a'] = [
     'Still',
     'Bizarre',
 ]
+
+# Function calls in containers should be ignored
+foo['a'] = [
+    {
+        'hello': baz,
+        'world': baz,
+    },
+    {
+        'goodbye': baz,
+        'moon': baz,
+    },
+]
+
+
+foo['a'] = [
+    {
+        'hello': baz(x=True),
+        'world': baz(foobar='barfoo'),
+    },
+    {
+        'goodbye': baz(z=[1,2,3]),
+        'moon': baz(z=(1, 2, 3)),
+    },
+]

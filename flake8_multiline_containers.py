@@ -25,6 +25,9 @@ ASSIGNMENT_REGEX = re.compile(r'([^=])=([^=]*$)')
 # When a line contains only comments, this string is returned instead
 ONLY_COMMENTS_STRING = '__only_comments__'
 
+# When a line contains a function call, replace it with this string
+FUNCTION_STRING = '__func__'
+
 
 class ErrorCodes(enum.Enum):
     JS101 = "Multi-line container not broken after opening character"
@@ -100,12 +103,18 @@ class MultilineContainers:
 
         line = last_line
 
+        # Function calls get removed entirely from examination
+        temp_line = line
+        for match in re.finditer(r'(\w+\s*\()(.*)(\))', line):
+            i = match.group(2)
+            if i is not None:
+                temp_line = temp_line.replace(i, FUNCTION_STRING)
+
         # Only scan the part of the line after assignment
-        # If inside a function call, then it's not a variable assignment
-        if not self.function_depth:
-            matched = ASSIGNMENT_REGEX.search(line)
-            if matched:
-                line = matched.group(2)
+        # ie: in <foo = bar[1, 2]> we only want <bar[1, 2]>
+        matched = ASSIGNMENT_REGEX.search(temp_line)
+        if matched:
+            line = matched.group(2)
 
         # Find strings and make sure they're ignored
         for match in STRING_REGEX.finditer(line):
@@ -154,7 +163,7 @@ class MultilineContainers:
 
         # Tuples, functions, and classes all use lunula brackets.
         # Ensure only tuples are caught by JS101.
-        if open_character == '(':
+        if open_character == '(' and open_times != close_times:
             for _ in re.finditer(FUNCTION_CALL_REGEX, line):
                 # When inside a function with multiline arguments,
                 # ignore the opening bracket
