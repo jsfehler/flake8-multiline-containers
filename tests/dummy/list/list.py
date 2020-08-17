@@ -50,3 +50,27 @@ foo = [
     foobar(baz=[bazbin(a=True)]),
     foobar(baz=[bazbin(a=False)]),
 ]
+
+# Function calls in containers should be ignored
+foo['a'] = [
+    [
+        baz,
+        baz,
+    ],
+    [
+        baz,
+        baz,
+    ],
+]
+
+
+foo['a'] = [
+    [
+        baz(x=True),
+        baz(foobar='barfoo'),
+    ],
+    [
+        baz(z=[1,2,3]),
+        baz(z=(1, 2, 3)),
+    ],
+]
