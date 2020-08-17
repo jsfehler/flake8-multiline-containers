@@ -11,7 +11,7 @@ def function_def_file_path(dummy_file_path):
 
 
 def test_js101_function_def_ignored(function_def_file_path):
-    """Function calls should not trigger JS101."""
+    """Function definitions should not trigger JS101."""
     style_guide = flake8.get_style_guide(
         select=['JS101'],
     )
@@ -23,7 +23,7 @@ def test_js101_function_def_ignored(function_def_file_path):
 
 
 def test_js102_function_def_ignored(function_def_file_path):
-    """Function calls should not trigger JS102."""
+    """Function definitions should not trigger JS102."""
     style_guide = flake8.get_style_guide(
         select=['JS102'],
     )
