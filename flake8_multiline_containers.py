@@ -22,6 +22,9 @@ CONDITIONAL_BLOCK_REGEX = re.compile(
 # Ignores equality comparison, ie: foo == [1, 2, 3]
 ASSIGNMENT_REGEX = re.compile(r'([^=])=([^=]*$)')
 
+# When a line contains only comments, this string is returned instead
+ONLY_COMMENTS_STRING = '__only_comments__'
+
 
 class ErrorCodes(enum.Enum):
     JS101 = "Multi-line container not broken after opening character"
@@ -82,7 +85,7 @@ class MultilineContainers:
 
         # Whole line is a comment, so ignore it
         if re.search(r'^\s*#', line):
-            return 0, 0
+            return 0, 0, ONLY_COMMENTS_STRING
 
         # Find comments and make sure they're ignored
         # Remove strings from temp_line
@@ -118,7 +121,7 @@ class MultilineContainers:
         open_times -= open_matches_in_string
         close_times -= close_matches_in_string
 
-        return open_times, close_times
+        return open_times, close_times, line
 
     def _check_opening(
         self,
@@ -142,9 +145,12 @@ class MultilineContainers:
             error_code: The error to report if the validation fails.
 
         """
-        open_times, close_times = self._number_of_matches_in_line(
+        open_times, close_times, parsed_line = self._number_of_matches_in_line(
             open_character, close_character, line,
         )
+
+        if parsed_line == ONLY_COMMENTS_STRING:
+            return
 
         # Tuples, functions, and classes all use lunula brackets.
         # Ensure only tuples are caught by JS101.
@@ -226,9 +232,12 @@ class MultilineContainers:
             error_code: The error to report if the validation fails.
 
         """
-        open_times, close_times = self._number_of_matches_in_line(
+        open_times, close_times, parsed_line = self._number_of_matches_in_line(
             open_character, close_character, line,
         )
+
+        if parsed_line == ONLY_COMMENTS_STRING:
+            return
 
         if close_times > 0 and self.inside_conditional_block:
             close_times -= 1
