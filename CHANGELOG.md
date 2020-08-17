@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.15] - 2020-08-17
+
+## Fixed
+
+- Ensure lines that are only comments are ignored completely
+- Handle cases where containers have function calls with keyword arguments inside them
+
 ## [0.0.14] - 2020-08-13
 
 ### Fixed
