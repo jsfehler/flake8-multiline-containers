@@ -10,8 +10,8 @@ def class_def_file_path(dummy_file_path):
     return f'{dummy_file_path}/callable/class_def.py'
 
 
-def test_js101_function_def_ignored(class_def_file_path):
-    """Function calls should not trigger JS101."""
+def test_js101_class_def(class_def_file_path):
+    """Class definition should not trigger JS101."""
     style_guide = flake8.get_style_guide(
         select=['JS101'],
     )
@@ -22,8 +22,8 @@ def test_js101_function_def_ignored(class_def_file_path):
     assert 0 == r.total_errors
 
 
-def test_js102_function_def_ignored(class_def_file_path):
-    """Function calls should not trigger JS102."""
+def test_js102_class_def(class_def_file_path):
+    """Class definition should not trigger JS102."""
     style_guide = flake8.get_style_guide(
         select=['JS102'],
     )

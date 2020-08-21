@@ -6,8 +6,8 @@ import pytest
 
 
 @pytest.fixture
-def conditional_block_file_path():
-    return 'tests/dummy/conditional_block.py'
+def conditional_block_file_path(dummy_file_path):
+    return f'{dummy_file_path}/conditional_block.py'
 
 
 def test_js101_conditional_block(conditional_block_file_path):
