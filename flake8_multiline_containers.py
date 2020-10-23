@@ -101,7 +101,7 @@ class MultilineContainers:
             if i is not None:
                 last_line = last_line.replace(i, '')
 
-        line = last_line
+        line = last_line.replace(' ', '')
 
         # Function calls get removed entirely from examination
         temp_line = line
@@ -191,8 +191,8 @@ class MultilineContainers:
             # One opening character, but content after it.
             else:
                 # Last character on a line is newline (\n). Get second to last.
-                last_index = len(line) - 2
-                if line[last_index] != open_character:
+                last_index = len(parsed_line) - 2
+                if parsed_line[last_index] != open_character:
                     e = _error(line_number + 1, last_index, error_code)
                     self.errors.append(e)
 
