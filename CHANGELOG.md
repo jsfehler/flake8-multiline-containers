@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.16] - 2020-10-23
+
+## Fixed
+
+- Ensure comments on lines where a multiline container starts are ignored
+
 ## [0.0.15] - 2020-08-17
 
 ## Fixed
