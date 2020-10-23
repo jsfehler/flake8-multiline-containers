@@ -27,3 +27,11 @@
 # Why do you do this? Still, ignored.
 a = b # a = { 'foobar': 'Hello',
 x = y #       'barfoo': 'World' }
+
+
+# Comments at the start of multiline containers should be ignored
+foo = [  # comment
+    1,
+    2,
+    3,
+]
