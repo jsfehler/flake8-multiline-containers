@@ -107,7 +107,7 @@ class MultilineContainers:
         temp_line = line
         for match in re.finditer(r'(\w+\s*\()(.*)(\))', line):
             i = match.group(2)
-            if i is not None:
+            if i not in [None, '']:
                 temp_line = temp_line.replace(i, FUNCTION_STRING)
 
         # Only scan the part of the line after assignment
