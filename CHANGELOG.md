@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.17] - 2020-10-26
+
+## Fixed
+
+- Issue introduced in 0.0.16 where variable assignment was incorrectly parsed
+
 ## [0.0.16] - 2020-10-23
 
 ## Fixed
