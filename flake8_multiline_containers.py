@@ -127,7 +127,7 @@ class MultilineContainers:
         self,
         open_character: str,
         close_character: str,
-        matches,
+        matches: Tuple[int, int, str],
         line_number: int,
         line: str,
         error_code: ErrorCodes,
@@ -141,13 +141,13 @@ class MultilineContainers:
         Arguments:
             open_character: Opening character for the container.
             close_character: Closing character for the container.
+            matches: Numers of open and closing characters found.
             line_number: The number of the line. Reported back to flake8.
             line: The line to check.
             error_code: The error to report if the validation fails.
 
         """
         open_times, close_times, parsed_line = matches
-
         if parsed_line == ONLY_COMMENTS_STRING:
             return
 
@@ -214,7 +214,7 @@ class MultilineContainers:
         self,
         open_character: str,
         close_character: str,
-        matches,
+        matches: Tuple[int, int, str],
         line_number: int,
         line: str,
         error_code: ErrorCodes,
@@ -227,13 +227,13 @@ class MultilineContainers:
         Arguments:
             open_character: Opening character for the container.
             close_character: Closing character for the container.
+            matches: Numers of open and closing characters found.
             line_number: The number of the line. Reported back to flake8.
             line: The line to check.
             error_code: The error to report if the validation fails.
 
         """
         open_times, close_times, parsed_line = matches
-
         if parsed_line == ONLY_COMMENTS_STRING:
             return
 
@@ -263,9 +263,9 @@ class MultilineContainers:
         self,
         line_number: int,
         line: str,
-        curly_matches,
-        square_matches,
-        lunula_matches,
+        curly_matches: Tuple[int, int, str],
+        square_matches: Tuple[int, int, str],
+        lunula_matches: Tuple[int, int, str],
     ):
         """Validate JS101 for a single line.
 
@@ -281,9 +281,9 @@ class MultilineContainers:
         self,
         line_number: int,
         line: str,
-        curly_matches,
-        square_matches,
-        lunula_matches,
+        curly_matches: Tuple[int, int, str],
+        square_matches: Tuple[int, int, str],
+        lunula_matches: Tuple[int, int, str],
     ):
         """Validate JS102 for a single line.
 
