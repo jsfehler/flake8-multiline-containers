@@ -1,5 +1,6 @@
 import enum
 import re
+from typing import List, Tuple
 
 import attr
 
@@ -34,7 +35,7 @@ class ErrorCodes(enum.Enum):
     JS102 = "Multi-line container does not close on same column as opening"
 
 
-def _error(line_number: int, column: int, error_code: ErrorCodes) -> tuple:
+def _error(line_number: int, column: int, error_code: ErrorCodes) -> Tuple[int, int, str, None]:
     """Format error report such that it's usable by flake8's reporting."""
     return (line_number, column, f'{error_code.name} {error_code.value}', None)
 
@@ -55,10 +56,10 @@ class MultilineContainers:
     filename = attr.ib(default="(none)")
     lines = attr.ib(default=None)
 
-    errors = attr.ib(factory=list)
+    errors = attr.ib(factory=list, type=List[Tuple[int, int, str, None]])
 
     # The column where the last line that opened started.
-    last_starts_at = attr.ib(factory=list)
+    last_starts_at = attr.ib(factory=list, type=List[int])
 
     # The number of functions deep we currently are in.
     function_depth = attr.ib(default=0)
@@ -69,7 +70,7 @@ class MultilineContainers:
             self,
             open_character: str,
             close_character: str,
-            line: str) -> tuple:
+            line: str) -> Tuple[int, int, str]:
         """Scan line and check how many times each character appears.
 
         Characters inside strings are ignored.
