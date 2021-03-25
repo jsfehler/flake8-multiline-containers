@@ -127,6 +127,7 @@ class MultilineContainers:
         self,
         open_character: str,
         close_character: str,
+        matches,
         line_number: int,
         line: str,
         error_code: ErrorCodes,
@@ -145,9 +146,7 @@ class MultilineContainers:
             error_code: The error to report if the validation fails.
 
         """
-        open_times, close_times, parsed_line = self._number_of_matches_in_line(
-            open_character, close_character, line,
-        )
+        open_times, close_times, parsed_line = matches
 
         if parsed_line == ONLY_COMMENTS_STRING:
             return
@@ -215,6 +214,7 @@ class MultilineContainers:
         self,
         open_character: str,
         close_character: str,
+        matches,
         line_number: int,
         line: str,
         error_code: ErrorCodes,
@@ -232,9 +232,7 @@ class MultilineContainers:
             error_code: The error to report if the validation fails.
 
         """
-        open_times, close_times, parsed_line = self._number_of_matches_in_line(
-            open_character, close_character, line,
-        )
+        open_times, close_times, parsed_line = matches
 
         if parsed_line == ONLY_COMMENTS_STRING:
             return
@@ -261,18 +259,32 @@ class MultilineContainers:
             # Remove the last start location
             self.last_starts_at.pop()
 
-    def check_for_js101(self, line_number: int, line: str):
+    def check_for_js101(
+        self,
+        line_number: int,
+        line: str,
+        curly_matches,
+        square_matches,
+        lunula_matches,
+    ):
         """Validate JS101 for a single line.
 
         When a line opens a container
         And the container isn't closed on the same line
         Then the line should break after the opening brackets
         """
-        self._check_opening('{', '}', line_number, line, ErrorCodes.JS101)
-        self._check_opening('[', ']', line_number, line, ErrorCodes.JS101)
-        self._check_opening('(', ')', line_number, line, ErrorCodes.JS101)
+        self._check_opening('{', '}', curly_matches, line_number, line, ErrorCodes.JS101)
+        self._check_opening('[', ']', square_matches, line_number, line, ErrorCodes.JS101)
+        self._check_opening('(', ')', lunula_matches, line_number, line, ErrorCodes.JS101)
 
-    def check_for_js102(self, line_number: int, line: str):
+    def check_for_js102(
+        self,
+        line_number: int,
+        line: str,
+        curly_matches,
+        square_matches,
+        lunula_matches,
+    ):
         """Validate JS102 for a single line.
 
         When a line closes a container
@@ -280,9 +292,9 @@ class MultilineContainers:
         Then the closing character must be on the same column as the
         opening line
         """
-        self._check_closing('{', '}', line_number, line, ErrorCodes.JS102)
-        self._check_closing('[', ']', line_number, line, ErrorCodes.JS102)
-        self._check_closing('(', ')', line_number, line, ErrorCodes.JS102)
+        self._check_closing('{', '}', curly_matches, line_number, line, ErrorCodes.JS102)
+        self._check_closing('[', ']', square_matches, line_number, line, ErrorCodes.JS102)
+        self._check_closing('(', ')', lunula_matches, line_number, line, ErrorCodes.JS102)
 
     def docstring_status(self, line: str, quote: str, last_status: int) -> int:
         """Check if a line is part of a docstring.
@@ -339,8 +351,32 @@ class MultilineContainers:
             )
 
             if single_quote_status == 0 and double_quote_status == 0:
-                self.check_for_js101(index, line)
-                self.check_for_js102(index, line)
+                curly_matches = self._number_of_matches_in_line(
+                    '{', '}', line,
+                )
+
+                square_matches = self._number_of_matches_in_line(
+                    '[', ']', line,
+                )
+
+                lunula_matches = self._number_of_matches_in_line(
+                    '(', ')', line,
+                )
+
+                self.check_for_js101(
+                    index,
+                    line,
+                    curly_matches,
+                    square_matches,
+                    lunula_matches,
+                )
+                self.check_for_js102(
+                    index,
+                    line,
+                    curly_matches,
+                    square_matches,
+                    lunula_matches,
+                )
 
         for e in self.errors:
             yield e
