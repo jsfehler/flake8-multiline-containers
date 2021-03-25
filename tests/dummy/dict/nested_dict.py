@@ -1,3 +1,6 @@
+# Right: Opens and closes on same line
+foo = {'a': {'x': 'hello', 'y': 'world'}, 'b': {'x': 'hello', 'y': 'world'}}
+
 # Right
 foo = {
     'a': {'x': 'hello', 'y': 'world'},
@@ -28,3 +31,7 @@ foo = {
     'a': {'x': 'hello', 'y': 'world'},
     'b': {'x': 'hello', 'y': 'world'},
       }
+
+
+# Right: Function call in dict that's in a tuple
+foo = ({'a': object()})

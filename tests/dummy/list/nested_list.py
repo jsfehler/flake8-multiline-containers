@@ -40,3 +40,7 @@ foo = [
     ['hello', 'world'],
     ['hello', 'world'],
       ]
+
+
+# Right: Function call in list that's in a tuple
+foo = ([object()])

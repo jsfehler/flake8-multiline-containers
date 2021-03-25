@@ -85,3 +85,17 @@ foo['a'] = [
         'moon': baz(z=(1, 2, 3)),
     },
 ]
+
+
+# Wrong
+foo['a'] = [
+    {
+        'hello': {1,
+                  2, 3},
+        'world': {},
+    },
+    {
+        'goodbye': {},
+        'moon': {},
+    },
+]
