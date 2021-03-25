@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.18] - 2021-03-25
+
+## Fixed
+- Handle scenario where function call is inside nested container
+
+## Changed
+
+- Only scan each line once for each container type instead of twice (once for opening, once for closing)
+
 ## [0.0.17] - 2020-10-26
 
 ## Fixed
