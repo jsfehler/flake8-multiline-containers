@@ -18,8 +18,9 @@ flake8-multiline-containers
     :target: https://pyup.io/repos/github/jsfehler/flake8-multiline-containers
     :alt: Updates
 
-.. image:: https://travis-ci.org/jsfehler/flake8-multiline-containers.svg?branch=master
-    :target: https://travis-ci.org/jsfehler/flake8-multiline-containers
+.. image:: https://github.com/jsfehler/flake8-multiline-containers/actions/workflows/main.yml/badge.svg
+    :target: https://github.com/jsfehler/flake8-multiline-containers/actions/workflows/main.yml
+    :alt: Build status
 
 A `Flake8 <https://flake8.readthedocs.io/en/latest/index.html>`_ plugin to ensure a consistent format for multiline containers.
 
