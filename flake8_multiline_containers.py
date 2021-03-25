@@ -21,8 +21,7 @@ CONDITIONAL_BLOCK_REGEX = re.compile(
 
 # Matches anything that looks like a variable assignment, ie: foo = [1, 2, 3]
 # Ignores equality comparison, ie: foo == [1, 2, 3]
-ASSIGNMENT_REGEX = re.compile(r'([^=])=([^=]*$)')
-
+ASSIGNMENT_REGEX = re.compile(r'(^\s*[A-Za-z_]\w+|\])\s*=\s*([^=]*$)')
 # When a line contains only comments, this string is returned instead
 ONLY_COMMENTS_STRING = '__only_comments__'
 
@@ -105,16 +104,9 @@ class MultilineContainers:
 
         line = last_line.replace(' ', '')
 
-        # Function calls get removed entirely from examination
-        temp_line = line
-        for match in re.finditer(r'(\w+\s*\()(.*)(\))', line):
-            i = match.group(2)
-            if i not in [None, '']:
-                temp_line = temp_line.replace(i, FUNCTION_STRING)
-
         # Only scan the part of the line after assignment
         # ie: in <foo = bar[1, 2]> we only want <bar[1, 2]>
-        matched = ASSIGNMENT_REGEX.search(temp_line)
+        matched = ASSIGNMENT_REGEX.search(line)
         if matched:
             line = matched.group(2)
 

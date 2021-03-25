@@ -10,7 +10,6 @@ foo = (
     ),
 )
 
-
 # tuple has child list that ends on same line as opening
 # Wrong: JS101
 foo = (('earth', 'mars'),
@@ -40,3 +39,11 @@ foo = (
     ('hello', 'world'),
     ('hello', 'world'),
       )
+
+
+# Right: Function call in tuple that's in a tuple
+foo = ((object()))
+
+foo = ((object(1, 2, 3)))
+
+foo = ((object((1, 2, 3), 4, 5)))

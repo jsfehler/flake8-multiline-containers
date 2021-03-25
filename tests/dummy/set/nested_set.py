@@ -21,3 +21,7 @@ foo = {
     {'hello', 'world'},
     {'hello', 'world'},
       }
+
+
+# Right: Function call in set that's in a tuple
+foo = ({object()})
