@@ -35,7 +35,11 @@ class ErrorCodes(enum.Enum):
     JS102 = "Multi-line container does not close on same column as opening"
 
 
-def _error(line_number: int, column: int, error_code: ErrorCodes) -> Tuple[int, int, str, None]:
+def _error(
+    line_number: int,
+    column: int,
+    error_code: ErrorCodes,
+) -> Tuple[int, int, str, None]:
     """Format error report such that it's usable by flake8's reporting."""
     return (line_number, column, f'{error_code.name} {error_code.value}', None)
 
