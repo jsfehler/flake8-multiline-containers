@@ -88,18 +88,15 @@ class MultilineContainers:
             tuple
 
         """
-        open_matches_in_string = 0
-        close_matches_in_string = 0
-
         # Whole line is a comment, so ignore it
         if re.search(r'^\s*#', line):
             return 0, 0, ONLY_COMMENTS_STRING
 
-        # Find comments and make sure they're ignored
-        # Remove strings from temp_line
+        # Remove strings from the line. Strings are always ignored.
         temp_line = STRING_REGEX.sub('', line)
 
-        # Find comments in temp_line, remove them from line
+        # Find comments and make sure they're ignored
+        # Remove comments from temp_line
         last_line = temp_line
         for match in re.finditer(r'#.*', temp_line):
             i = match.group(0)
@@ -121,19 +118,8 @@ class MultilineContainers:
         if matched:
             line = matched.group(2)
 
-        # Find strings and make sure they're ignored
-        for match in STRING_REGEX.finditer(line):
-            i = match.group(0)
-            if i is not None:
-                open_matches_in_string += i.count(open_character)
-                close_matches_in_string += i.count(close_character)
-
         open_times = line.count(open_character)
         close_times = line.count(close_character)
-
-        # Any time the open or close character appear in a string, ignore them.
-        open_times -= open_matches_in_string
-        close_times -= close_matches_in_string
 
         return open_times, close_times, line
 
