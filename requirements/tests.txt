@@ -1,4 +1,4 @@
-attrs==21.1.0
+attrs==21.2.0
 flake8==3.9.1
 pytest==6.2.4
 pytest-cov==2.11.1
