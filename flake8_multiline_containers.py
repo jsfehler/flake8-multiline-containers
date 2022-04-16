@@ -165,8 +165,9 @@ class MultilineContainers:
                 [get_left_pad(line)] * open_times,
             )
 
-            # Multiple opening characters
-            if open_times > 1:
+            # Multiple opening characters with no closing
+            # There can only be one hanging opening
+            if (open_times - close_times) > 1:
                 e = _error(line_number + 1, 0, error_code)
                 self.errors.append(e)
 
