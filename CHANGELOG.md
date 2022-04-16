@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.19] - 2022-04-16
+
+## Fixed
+- False positive on multiline conditional expressions
+
 ## [0.0.18] - 2021-03-25
 
 ## Fixed
