@@ -10,6 +10,10 @@ STRING_REGEX = re.compile(
     r'"([^"\\]*(\\.[^"\\]*)*)"|\'([^\'\\]*(\\.[^\'\\]*)*)\'',
 )
 
+MULTILINE_STRING_REGEX = re.compile(
+    r'"""|\'\'\'',
+)
+
 # Matches anything that looks like a:
 # function call, function definition, or class definition with inheritance
 # Actual tuples should be ignored
@@ -69,6 +73,8 @@ class MultilineContainers:
 
     inside_conditional_block = attr.ib(default=0)
 
+    inside_multiline_string = False
+
     def _number_of_matches_in_line(
             self,
             open_character: str,
@@ -90,6 +96,15 @@ class MultilineContainers:
         # Whole line is a comment, so ignore it
         if re.search(r'^\s*#', line):
             return 0, 0, ONLY_COMMENTS_STRING
+
+        # Multiline strings should be ignored.
+        # If a line has only 1 triple quote, assume it's multiline
+        matches = MULTILINE_STRING_REGEX.findall(line)
+        if len(matches) == 1:
+            self.inside_multiline_string = not self.inside_multiline_string
+
+        if self.inside_multiline_string:
+            return 0, 0, line
 
         # Remove strings from the line. Strings are always ignored.
         temp_line = STRING_REGEX.sub('', line)
